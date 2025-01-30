@@ -7,21 +7,38 @@ export default function App() {
   const [activeFunction, setActiveFunction] = useState(null);
   const [rectangles, setRectangles] = useState([]);
 
-  const handleAdd = () => {
+  const handleAdd = (inputValues) => {
     const rectangle = {
-      id: Math.floor(Math.random() * 100 + 1),
-      x: 1,
-      y: 2,
-      length: 3,
-      color: 4,
+      id: inputValues.ID,
+      x: parseFloat(inputValues.X) || 0,
+      y: parseFloat(inputValues.Y) || 0,
+      length: parseFloat(inputValues.Length) || 100,
+      color: inputValues.Color || "red",
     };
-    rectangles.push(rectangle);
 
     setRectangles([...rectangles, rectangle]);
+    setIsModalOpen(false);
   };
 
-  const handleUpdate = () => {};
-  const handleDelete = () => {};
+  const handleUpdate = (inputValues) => {
+    setRectangles((prevRectangles) =>
+      prevRectangles.map((rectangle) =>
+        rectangle.id === inputValues.ID
+          ? {
+              ...rectangle,
+              x: parseFloat(inputValues.X),
+              y: parseFloat(inputValues.Y),
+            }
+          : rectangle,
+      ),
+    );
+  };
+
+  const handleDelete = (inputValues) => {
+    setRectangles((prevRectangles) =>
+      prevRectangles.filter((rectangle) => rectangle.id !== inputValues.ID),
+    );
+  };
 
   return (
     <>
@@ -36,6 +53,9 @@ export default function App() {
         setIsModalOpen={setIsModalOpen}
         activeFunction={activeFunction}
         rectangles={rectangles}
+        handleAdd={handleAdd}
+        handleDelete={handleDelete}
+        handleUpdate={handleUpdate}
       />
     </>
   );
